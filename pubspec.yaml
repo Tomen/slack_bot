@@ -1,0 +1,18 @@
+name: slack_bot
+version: 0.0.1
+description: A sample command-line application.
+#author: Your Name <email@example.com>
+#homepage: https://www.example.com
+
+environment:
+  sdk: '>=1.0.0 <2.0.0'
+
+dependencies:
+  oauth2: '0.9.3'
+  http: "0.11.3"
+  reddit: "0.3.2"
+  yaml: any
+
+
+dev_dependencies:
+  test: '>=0.12.0 <0.13.0'
