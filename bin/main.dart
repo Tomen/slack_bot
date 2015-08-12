@@ -7,6 +7,7 @@ import "package:yaml/yaml.dart";
 import 'package:slack_bot/slack_bot.dart';
 import "package:slack_bot/plugins/reddit_command_plugin.dart";
 import "package:slack_bot/plugins/response_plugin.dart";
+import "package:slack_bot/plugins/fylter_command_plugin.dart";
 
 SlackClient client;
 String defaultChannel;
@@ -45,6 +46,14 @@ main(List<String> arguments) async {
       final String secret = config["secret"];
       RedditCommandPlugin reddit = new RedditCommandPlugin(identifier, secret);
       client.registerPlugin(reddit);
+    }
+
+    if(key == "fylter"){
+      YamlMap config = yaml[key];
+      final String loginUrl =  config["login_url"];
+      final String bookmarkUrl = config["bookmark_url"];
+      FylterCommandPlugin fylter = new FylterCommandPlugin(loginUrl, bookmarkUrl);
+      client.registerPlugin(fylter);
     }
   }
 
