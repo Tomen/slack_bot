@@ -16,11 +16,11 @@ String defaultChannel;
   provide a config.yaml file with the following configuration. (the reddit config is optional)
 
   slack:
-    token: xoxb-8889254371-HMvEzhja3YBlnm8DLOET0SaW
-    defaultChannel: C08PKN9D3
+    token: xxxx
+    defaultChannel: xxxx
   reddit:
-    identifier: -SAZzRcuhaMjiQ
-    secret: U7psJGy5g_TdNzKc113xEr4inLY
+    identifier: xxxx
+    secret: xxxx
 
 */
 main(List<String> arguments) async {
