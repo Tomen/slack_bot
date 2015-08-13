@@ -14,7 +14,11 @@ class RedditCommandPlugin extends CommandPlugin {
 
 
   RedditCommandPlugin(this.identifier, this.secret){
-    commands = {"news": _printNews};
+    commands = {"reddit": _printNews};
+  }
+
+  List<String> get commandDescriptions {
+    return ["!reddit - Liefert aktuelle News von Reddit"];
   }
 
   Reddit reddit = new Reddit(new http.Client());

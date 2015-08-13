@@ -7,14 +7,14 @@ class SlackClient {
   final String _token;
   SlackModel _model = new SlackModel();
   WebSocket _socket;
-  List<IPlugin> _plugins = <IPlugin>[];
+  List<IPlugin> plugins = <IPlugin>[];
 
   SlackClient(this._token);
 
   /// register the plugin
   registerPlugin(IPlugin plugin){
     plugin.client = this;
-    _plugins.add(plugin);
+    plugins.add(plugin);
   }
 
   /// Calls a web service method
@@ -48,7 +48,7 @@ class SlackClient {
       _model.start(result);
       return WebSocket.connect(result["url"]).then((socket) async {
 
-        var connectFutures = _plugins.map((IPlugin plugin) => plugin.connect());
+        var connectFutures = plugins.map((IPlugin plugin) => plugin.connect());
         await Future.wait(connectFutures);
 
         _socket = socket;
@@ -63,7 +63,7 @@ class SlackClient {
   }
 
   _processIncomingMessage(Map message){
-    for(IPlugin plugin in _plugins){
+    for(IPlugin plugin in plugins){
       if(plugin.respond(message)){
         break;
       }

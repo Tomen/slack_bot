@@ -1,8 +1,9 @@
 part of slack_bot;
 
-class CommandPlugin extends IPlugin {
+abstract class CommandPlugin extends IPlugin {
 
   Map<String, Function> commands = <String, Function>{};
+  List<String> get commandDescriptions;
 
   CommandPlugin();
 

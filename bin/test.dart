@@ -1,9 +1,7 @@
-import "package:slack_bot/plugins/fylter_command_plugin.dart";
+import "package:slack_bot/plugins/ots_command_plugin.dart";
 
 main() async{
-
-
-  FylterCommandPlugin plugin = new FylterCommandPlugin(url);
+  OTSCommandPlugin plugin = new OTSCommandPlugin("");
   await plugin.connect();
   await plugin.printNews(null);
 }

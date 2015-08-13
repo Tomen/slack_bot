@@ -8,6 +8,8 @@ import 'package:slack_bot/slack_bot.dart';
 import "package:slack_bot/plugins/reddit_command_plugin.dart";
 import "package:slack_bot/plugins/response_plugin.dart";
 import "package:slack_bot/plugins/fylter_command_plugin.dart";
+import "package:slack_bot/plugins/command_listing_plugin.dart";
+import "package:slack_bot/plugins/ots_command_plugin.dart";
 
 SlackClient client;
 String defaultChannel;
@@ -40,6 +42,11 @@ main(List<String> arguments) async {
   defaultChannel = slackConfig["defaultChannel"];
 
   for(String key in yaml.keys){
+    if(key == "commands"){
+      CommandListingCommandPlugin commandsPlugin = new CommandListingCommandPlugin();
+      client.registerPlugin(commandsPlugin);
+    }
+
     if(key == "reddit"){
       YamlMap config = yaml[key];
       final String identifier =  config["identifier"];
@@ -54,6 +61,13 @@ main(List<String> arguments) async {
       final String bookmarkUrl = config["bookmark_url"];
       FylterCommandPlugin fylter = new FylterCommandPlugin(loginUrl, bookmarkUrl);
       client.registerPlugin(fylter);
+    }
+
+    if(key == "ots"){
+      YamlMap config = yaml[key];
+      final String apiKey =  config["api_key"];
+      OTSCommandPlugin ots = new OTSCommandPlugin(apiKey);
+      client.registerPlugin(ots);
     }
   }
 

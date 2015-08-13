@@ -17,6 +17,10 @@ class FylterCommandPlugin extends CommandPlugin {
     commands = {"fylter": printNews};
   }
 
+  List<String> get commandDescriptions {
+    return ["!fylter - Liefert aktuelle News aus dem Fylter"];
+  }
+
   connect() async{
     return http.get(_loginUrl).then((http.Response response){
       var cookie = response.headers["set-cookie"];
@@ -31,7 +35,8 @@ class FylterCommandPlugin extends CommandPlugin {
     String channel = message["channel"];
 
     http.get(_bookmarkUrl, headers:{"Cookie": _cookie}).then((http.Response response){
-      String raw = response.body;
+      String raw = UTF8.decode(response.bodyBytes);
+      //String raw = response.body;
       Map map = JSON.decode(raw);
 
       print(map);
@@ -45,7 +50,7 @@ class FylterCommandPlugin extends CommandPlugin {
       }
 
       client.postMessage("Top-News von Fylter:", channel);
-      for(Map item in content.take(5)){
+      for(Map item in content.take(15)){
         String title = item["title"];
         String url = item["url"];
         client.postMessage("$title – $url", channel);
