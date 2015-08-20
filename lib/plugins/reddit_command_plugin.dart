@@ -4,6 +4,7 @@ import "dart:convert";
 
 import "package:reddit/reddit.dart";
 import 'package:http/http.dart' as http;
+import "package:logging/logging.dart";
 
 import "package:slack_bot/slack_bot.dart";
 
@@ -21,15 +22,20 @@ class RedditCommandPlugin extends CommandPlugin {
     return ["!reddit - Liefert aktuelle News von Reddit"];
   }
 
-  Reddit reddit = new Reddit(new http.Client());
 
   connect() async{
-    reddit.authSetup(identifier, secret);
-    await reddit.authFinish();
+
   }
 
-  _printNews(Map message){
+  _printNews(Map message) async{
     String channel = message["channel"];
+
+    Reddit reddit = new Reddit(new http.Client());
+    Reddit.logger.onRecord.listen((LogRecord record){
+      print(record.time.toString() + " - " + record.level.toString() + " - " + record.loggerName + ": " + record.message);
+    });
+    reddit.authSetup(identifier, secret);
+    await reddit.authFinish();
 
     reddit.sub("worldnews").top().limit(5).fetch().then((result) {
       print(result);

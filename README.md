@@ -7,3 +7,5 @@ It supports bot plugins. Current plugins:
 - RedditCommandPlugin: fetches the top 5 items from /r/worldnews
 
 See bin/main.dart for a terminal implementation. You need to provide a config.yaml file as described in main.dart.
+
+http://askubuntu.com/questions/8653/how-to-keep-processes-running-after-ending-ssh-session
