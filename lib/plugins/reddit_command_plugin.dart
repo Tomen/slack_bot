@@ -30,6 +30,13 @@ class RedditCommandPlugin extends CommandPlugin {
   _printNews(Map message) async{
     String channel = message["channel"];
 
+    String text = message["text"];
+    List words = text.split(" ");
+    String subredditName = null;
+    if(words.length > 1){
+      subredditName = words[1];
+    }
+
     Reddit reddit = new Reddit(new http.Client());
     Reddit.logger.onRecord.listen((LogRecord record){
       print(record.time.toString() + " - " + record.level.toString() + " - " + record.loggerName + ": " + record.message);
@@ -37,7 +44,16 @@ class RedditCommandPlugin extends CommandPlugin {
     reddit.authSetup(identifier, secret);
     await reddit.authFinish();
 
-    reddit.sub("worldnews").top().limit(5).fetch().then((result) {
+    Subreddit sub;
+    if(subredditName == null){
+      sub = reddit.frontPage;
+    }
+    else
+    {
+      sub = reddit.sub(subredditName);
+    }
+
+    sub.top().limit(5).fetch().then((result) {
       print(result);
       Map map = JSON.decode(result.toString());
       List elements = map["data"]["children"];
@@ -47,7 +63,7 @@ class RedditCommandPlugin extends CommandPlugin {
         return;
       }
 
-      client.postMessage("Top-News von Reddit:", channel);
+      //client.postMessage("Top-News von Reddit:", channel);
       for(Map element in elements.take(5)){
         String title = element["data"]["title"];
         String url = element["data"]["url"];

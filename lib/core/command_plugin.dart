@@ -13,10 +13,14 @@ abstract class CommandPlugin extends IPlugin {
 
       if(text != null){
         if(text.startsWith("!")){
-          String command = text.substring(1);
-          if(commands.keys.contains(command)){
-            commands[command](message);
-            return true;
+          text = text.substring(1);
+          List words = text.split(" ");
+          if(words.length > 0){
+            String command = words[0];
+            if(commands.keys.contains(command)){
+              commands[command](message);
+              return true;
+            }
           }
         }
       }
