@@ -24,7 +24,9 @@ class RedditCommandPlugin extends CommandPlugin {
 
 
   connect() async{
-
+    Reddit.logger.onRecord.listen((LogRecord record){
+      print(record.time.toString() + " - " + record.level.toString() + " - " + record.loggerName + ": " + record.message);
+    });
   }
 
   _printNews(Map message) async{
@@ -38,9 +40,6 @@ class RedditCommandPlugin extends CommandPlugin {
     }
 
     Reddit reddit = new Reddit(new http.Client());
-    Reddit.logger.onRecord.listen((LogRecord record){
-      print(record.time.toString() + " - " + record.level.toString() + " - " + record.loggerName + ": " + record.message);
-    });
     reddit.authSetup(identifier, secret);
     await reddit.authFinish();
 
