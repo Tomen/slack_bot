@@ -52,23 +52,30 @@ class RedditCommandPlugin extends CommandPlugin {
       sub = reddit.sub(subredditName);
     }
 
-    sub.top().limit(5).fetch().then((result) {
-      print(result);
-      Map map = JSON.decode(result.toString());
-      List elements = map["data"]["children"];
+    ListingResult result = await sub.top().limit(5).fetch();
+    print(result);
 
-      if(elements.length < 0){
-        client.postMessage("Nichts Neues.", channel);
-        return;
-      }
+    Map map = JSON.decode(result.toString());
 
-      //client.postMessage("Top-News von Reddit:", channel);
-      for(Map element in elements.take(5)){
-        String title = element["data"]["title"];
-        String url = element["data"]["url"];
-        client.postMessage("$title – $url", channel);
-      }
-    });
+    if(map.keys.contains("error")){
+      client.postMessage("Dieses Subreddit konnte ich nicht finden.", channel);
+      return;
+    }
+
+    List elements = map["data"]["children"];
+
+    if(elements.length < 0){
+      client.postMessage("Nichts Neues.", channel);
+      return;
+    }
+
+    //client.postMessage("Top-News von Reddit:", channel);
+    for(Map element in elements.take(5)){
+      String title = element["data"]["title"];
+      String url = element["data"]["url"];
+      client.postMessage("$title – $url", channel);
+    }
+
   }
 }
 
