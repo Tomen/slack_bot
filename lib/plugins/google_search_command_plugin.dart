@@ -30,35 +30,43 @@ class GoogleSearchCommandPlugin extends CommandPlugin {
   }
 
   _search(Map message) async{
-    String channel = message["channel"];
+    try {
 
-    String text = message["text"];
-    List<String> words = text.split(" ");
-    String searchString = null;
-    if(words.length > 1){
-      searchString = text.substring(words[0].length + 1);
+
+      String channel = message["channel"];
+
+      String text = message["text"];
+      List<String> words = text.split(" ");
+      String searchString = null;
+      if (words.length > 1) {
+        searchString = text.substring(words[0].length + 1);
+      }
+      else {
+        return;
+      }
+
+      search.CustomsearchApi api = new search.CustomsearchApi(searchClient);
+
+      search.Search searchResult = await api.cse.list(searchString, cx:customSearchId);
+
+
+      if (searchResult.items.length == 0) {
+        client.postMessage("Keine Ergebnisse.", channel);
+        return;
+      }
+
+      for (search.Result result in searchResult.items.take(5)) {
+        String title = result.title;
+        String url = result.formattedUrl;
+        client.postMessage("$title – $url", channel);
+      }
     }
-    else
-    {
-      return;
+    catch(error) {
+      //     error;
+      search.DetailedApiRequestError apiError = error as search.DetailedApiRequestError;
+      print(apiError.status.toString() + " " + apiError.message);
+      // }
     }
-
-    search.CustomsearchApi api = new search.CustomsearchApi(searchClient);
-
-    search.Search searchResult = await api.cse.list(searchString, cx:customSearchId);
-
-
-    if(searchResult.items.length == 0){
-      client.postMessage("Keine Ergebnisse.", channel);
-      return;
-    }
-
-    for(search.Result result in searchResult.items.take(5)){
-      String title = result.title;
-      String url = result.formattedUrl;
-      client.postMessage("$title – $url", channel);
-    }
-
   }
 }
 
