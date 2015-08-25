@@ -27,7 +27,7 @@ class OTSCommandPlugin extends CommandPlugin {
       Map map = JSON.decode(response.body);
       List elements = map["ergebnisse"];
 
-      if(elements.length < 0){
+      if(elements.length == 0){
         client.postMessage("Nichts Neues.", channel);
         return;
       }

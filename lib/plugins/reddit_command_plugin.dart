@@ -64,7 +64,7 @@ class RedditCommandPlugin extends CommandPlugin {
 
     List elements = map["data"]["children"];
 
-    if(elements.length < 0){
+    if(elements.length == 0){
       client.postMessage("Nichts Neues.", channel);
       return;
     }

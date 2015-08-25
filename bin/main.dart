@@ -10,6 +10,7 @@ import "package:slack_bot/plugins/response_plugin.dart";
 import "package:slack_bot/plugins/fylter_command_plugin.dart";
 import "package:slack_bot/plugins/command_listing_plugin.dart";
 import "package:slack_bot/plugins/ots_command_plugin.dart";
+import "package:slack_bot/plugins/google_search_command_plugin.dart";
 
 SlackClient client;
 String defaultChannel;
@@ -49,7 +50,7 @@ main(List<String> arguments) async {
 
     if(key == "reddit"){
       YamlMap config = yaml[key];
-      final String identifier =  config["identifier"];
+      final String identifier = config["identifier"];
       final String secret = config["secret"];
       RedditCommandPlugin reddit = new RedditCommandPlugin(identifier, secret);
       client.registerPlugin(reddit);
@@ -57,7 +58,7 @@ main(List<String> arguments) async {
 
     if(key == "fylter"){
       YamlMap config = yaml[key];
-      final String loginUrl =  config["login_url"];
+      final String loginUrl = config["login_url"];
       final String bookmarkUrl = config["bookmark_url"];
       FylterCommandPlugin fylter = new FylterCommandPlugin(loginUrl, bookmarkUrl);
       client.registerPlugin(fylter);
@@ -65,9 +66,16 @@ main(List<String> arguments) async {
 
     if(key == "ots"){
       YamlMap config = yaml[key];
-      final String apiKey =  config["api_key"];
+      final String apiKey = config["api_key"];
       OTSCommandPlugin ots = new OTSCommandPlugin(apiKey);
       client.registerPlugin(ots);
+    }
+    if(key == "search"){
+      YamlMap config = yaml[key];
+      final String apiKey = config["api_key"];
+      final String customSearchId = config["custom_search_id"];
+      GoogleSearchCommandPlugin search = new GoogleSearchCommandPlugin(apiKey, customSearchId);
+      client.registerPlugin(search);
     }
   }
 

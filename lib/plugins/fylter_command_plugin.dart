@@ -44,7 +44,7 @@ class FylterCommandPlugin extends CommandPlugin {
       List content = map["content"];
 
 
-      if(content.length < 0){
+      if(content.length == 0){
         client.postMessage("Nichts Neues.", channel);
         return;
       }
