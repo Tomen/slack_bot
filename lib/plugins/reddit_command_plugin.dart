@@ -12,7 +12,7 @@ import "package:slack_bot/slack_bot.dart";
 class RedditCommandPlugin extends CommandPlugin {
   final String identifier;
   final String secret;
-
+  Reddit reddit;
 
   RedditCommandPlugin(this.identifier, this.secret){
     commands = {"reddit": _printNews};
@@ -27,6 +27,9 @@ class RedditCommandPlugin extends CommandPlugin {
     Reddit.logger.onRecord.listen((LogRecord record){
       print(record.time.toString() + " - " + record.level.toString() + " - " + record.loggerName + ": " + record.message);
     });
+    reddit = new Reddit(new http.Client());
+    reddit.authSetup(identifier, secret);
+    return reddit.authFinish();
   }
 
   _printNews(Map message) async{
@@ -38,10 +41,6 @@ class RedditCommandPlugin extends CommandPlugin {
     if(words.length > 1){
       subredditName = words[1];
     }
-
-    Reddit reddit = new Reddit(new http.Client());
-    reddit.authSetup(identifier, secret);
-    await reddit.authFinish();
 
     Subreddit sub;
     if(subredditName == null){
