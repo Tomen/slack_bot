@@ -35,7 +35,7 @@ class ResponsePlugin extends IPlugin {
   bool respond(Map message){
 
     // we only look into text messages
-    if(message["type"] == "message") {
+    if(message["type"] == "message" && message["subtype"] != "bot_message") {
       String text = message["text"];
 
       // if it is not a text message, ignore it
