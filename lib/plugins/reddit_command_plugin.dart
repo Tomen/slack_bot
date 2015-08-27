@@ -57,7 +57,10 @@ class RedditCommandPlugin extends CommandPlugin {
 
     Map map = JSON.decode(result.toString());
 
-    if(map.keys.con)
+    if(map.keys.contains("error")){
+      client.postMessage("Dieses Subreddit konnte ich nicht finden.", channel);
+      return;
+    }
 
     List elements = map["data"]["children"];
 
