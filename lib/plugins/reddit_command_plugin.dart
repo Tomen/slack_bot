@@ -12,7 +12,7 @@ import "package:slack_bot/slack_bot.dart";
 class RedditCommandPlugin extends CommandPlugin {
   final String identifier;
   final String secret;
-  Reddit reddit;
+
 
   RedditCommandPlugin(this.identifier, this.secret){
     commands = {"reddit": _printNews};
@@ -27,9 +27,6 @@ class RedditCommandPlugin extends CommandPlugin {
     Reddit.logger.onRecord.listen((LogRecord record){
       print(record.time.toString() + " - " + record.level.toString() + " - " + record.loggerName + ": " + record.message);
     });
-    reddit = new Reddit(new http.Client());
-    reddit.authSetup(identifier, secret);
-    return reddit.authFinish();
   }
 
   _printNews(Map message) async{
@@ -41,6 +38,10 @@ class RedditCommandPlugin extends CommandPlugin {
     if(words.length > 1){
       subredditName = words[1];
     }
+
+    Reddit reddit = new Reddit(new http.Client());
+    reddit.authSetup(identifier, secret);
+    await reddit.authFinish();
 
     Subreddit sub;
     if(subredditName == null){
@@ -56,14 +57,11 @@ class RedditCommandPlugin extends CommandPlugin {
 
     Map map = JSON.decode(result.toString());
 
-    if(map.keys.contains("error")){
-      client.postMessage("Dieses Subreddit konnte ich nicht finden.", channel);
-      return;
-    }
+    if(map.keys.con)
 
     List elements = map["data"]["children"];
 
-    if(elements.length == 0){
+    if(elements.length < 0){
       client.postMessage("Nichts Neues.", channel);
       return;
     }
