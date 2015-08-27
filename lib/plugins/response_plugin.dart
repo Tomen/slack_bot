@@ -22,7 +22,7 @@ class ResponsePlugin extends IPlugin {
       "Erneuerung": "Erneuerung!",
       "wuzeln?": "Der Slackbot ist ja sooo toll...",
       "Stronach": "Habt's ihr gewusst, dass das Team Stronach immer noch $mps_in_team_stronach Abgeordnete hat?",
-      "lounge": "Ich werde jetzt bald auf die Öffentlichkeit losgelassen!"
+      "lounge": "Ich werde jetzt bald auf die Öffentlichkeit losgelassen!",
       "mjam": "https://neos.mjam.net"
     };
   }
