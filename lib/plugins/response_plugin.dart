@@ -20,9 +20,8 @@ class ResponsePlugin extends IPlugin {
     // our list of reponses
     _responses = {
       "Erneuerung": "Erneuerung!",
-      "wuzeln?": "Der Slackbot ist ja sooo toll...",
       "Stronach": "Habt's ihr gewusst, dass das Team Stronach immer noch $mps_in_team_stronach Abgeordnete hat?",
-      "lounge": "Ich werde jetzt bald auf die Öffentlichkeit losgelassen!"
+      "mjam": "https://neos.mjam.net"
     };
   }
 
@@ -34,7 +33,7 @@ class ResponsePlugin extends IPlugin {
   bool respond(Map message){
 
     // we only look into text messages
-    if(message["type"] == "message") {
+    if(message["type"] == "message" && message["subtype"] != "bot_message") {
       String text = message["text"];
 
       // if it is not a text message, ignore it
