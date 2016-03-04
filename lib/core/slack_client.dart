@@ -1,13 +1,13 @@
 part of slack_bot;
 
 
-
 class SlackClient {
 
   final String _token;
   SlackModel _model = new SlackModel();
   WebSocket _socket;
   List<IPlugin> plugins = <IPlugin>[];
+  Logger log = new Logger("slack_bot.clinet");
 
   SlackClient(this._token);
 
@@ -63,10 +63,16 @@ class SlackClient {
   }
 
   _processIncomingMessage(Map message){
-    for(IPlugin plugin in plugins){
-      if(plugin.respond(message)){
-        break;
+    try {
+      for(IPlugin plugin in plugins){
+        if(plugin.respond(message)){
+          break;
+        }
       }
+    }
+    catch(e, callstack){
+      log.warning(e);
+      log.warning(callstack);
     }
   }
 

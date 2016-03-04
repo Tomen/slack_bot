@@ -1,6 +1,7 @@
 library slack_bot_fylter_command_plugin;
 
 import "dart:convert";
+
 import 'package:http/http.dart' as http;
 
 import "package:slack_bot/slack_bot.dart";
@@ -12,6 +13,7 @@ class FylterCommandPlugin extends CommandPlugin {
   final String _loginUrl;
   final String _bookmarkUrl;
   String _cookie;
+
 
   FylterCommandPlugin(this._loginUrl, this._bookmarkUrl){
     commands = {"fylter": printNews};

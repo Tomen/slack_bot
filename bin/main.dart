@@ -4,6 +4,7 @@
 import "dart:io" as io;
 import "dart:convert";
 import "package:yaml/yaml.dart";
+import "package:logging/logging.dart";
 import 'package:slack_bot/slack_bot.dart';
 import "package:slack_bot/plugins/reddit_command_plugin.dart";
 import "package:slack_bot/plugins/response_plugin.dart";
@@ -29,6 +30,10 @@ String defaultChannel;
 */
 main(List<String> arguments) async {
 
+  Logger.root.level = Level.ALL;
+  Logger.root.onRecord.listen((LogRecord rec) {
+    print('${rec.level.name}: ${rec.time}: ${rec.message}');
+  });
 
   String raw = new io.File("config.yaml").readAsStringSync();
   YamlMap yaml = loadYaml(raw);
