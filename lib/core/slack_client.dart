@@ -7,7 +7,7 @@ class SlackClient {
   SlackModel _model = new SlackModel();
   WebSocket _socket;
   List<IPlugin> plugins = <IPlugin>[];
-  Logger log = new Logger("slack_bot.clinet");
+  Logger log = new Logger("slack_bot.client");
 
   SlackClient(this._token);
 
@@ -25,10 +25,10 @@ class SlackClient {
 
     params["token"] = _token;
     Uri uri = new Uri.https("slack.com", "/api/$apiMethod", params);
-    print(uri);
+    log.fine("calling $uri");
     return http.read(uri).then((result){
       var map = JSON.decode(result);
-      print(map);
+      log.finer(map);
       return map;
     });
   }
@@ -37,33 +37,54 @@ class SlackClient {
     // #lounge C02JBE7BK
     // #test C08PKN9D3
     Map map = {"id": 1, "type": "message", "channel": channel, "text": message};
-    print("sending: $map");
+    log.fine("sending: $map");
     var raw = JSON.encode(map);
-    _socket.add(raw);
+    if(_socket.readyState == WebSocket.OPEN)
+    {
+      _socket.add(raw);
+    }
+    else{
+      log.warning("Cannot add message. Socket is not open. Message: $raw");
+    }
   }
 
   /// connects the web socket
-  connect(){
-    return call("rtm.start").then((Map result){
-      _model.start(result);
-      return WebSocket.connect(result["url"]).then((socket) async {
+  connect() async{
+    Map result = await call("rtm.start");
+    _model.start(result);
 
-        var connectFutures = plugins.map((IPlugin plugin) => plugin.connect());
-        await Future.wait(connectFutures);
+    var connectFutures = plugins.map((IPlugin plugin) => plugin.connect());
+    await Future.wait(connectFutures);
 
-        _socket = socket;
-        print("did connect");
-        socket.listen((String message){
-          print("Received: $message");
-          Map map = JSON.decode(message);
-          _processIncomingMessage(map);
-        });
-      });
+    var connectionUrl = result["url"];
+    log.fine("connectionUrl: $connectionUrl");
+    await reconnect(connectionUrl);
+  }
+
+  reconnect(String url) async{
+    var socket = await WebSocket.connect(url);
+
+    _socket = socket;
+    log.info("did connect");
+    socket.listen((String message){
+      log.fine("Received: $message");
+      Map map = JSON.decode(message);
+      bool close = _processIncomingMessage(map);
+      if(close){
+        socket.close();
+      }
     });
   }
 
-  _processIncomingMessage(Map message){
+  // true if the connection should be closed
+  bool _processIncomingMessage(Map message){
     try {
+      //{"type":"reconnect_url","url":"wss://mpmulti-17od.slack-msgs.com/websocket/8hG39fEOcLkXiUvSlEg1H3ZFa0Et7LhzlQEamIm56LUYxPvLmcKNwVpH1PrGtR1bMACgFiAG8hkcviOONvOD69EdK7mhGSgAKywKATBcXgwfcSkwUQhQxPSdnbtCDYmH4KoOt3xSTnX5tN08BddQV-z7Omy4CO2StHiaMAZf4bg="}
+      if(message["type"] == "reconnect_url"){
+        reconnect(message["url"]);
+        return true;
+      }
+
       for(IPlugin plugin in plugins){
         if(plugin.respond(message)){
           break;
@@ -74,6 +95,8 @@ class SlackClient {
       log.warning(e);
       log.warning(callstack);
     }
+
+    return false;
   }
 
 }

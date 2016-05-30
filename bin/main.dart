@@ -32,7 +32,7 @@ main(List<String> arguments) async {
 
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
-    print('${rec.level.name}: ${rec.time}: ${rec.message}');
+    print('${rec.time} ${rec.level.name} – ${rec.message}');
   });
 
   String raw = new io.File("config.yaml").readAsStringSync();

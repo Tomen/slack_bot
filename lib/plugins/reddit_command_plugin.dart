@@ -26,9 +26,6 @@ class RedditCommandPlugin extends CommandPlugin {
 
 
   connect() async{
-    Reddit.logger.onRecord.listen((LogRecord record){
-      print(record.time.toString() + " - " + record.level.toString() + " - " + record.loggerName + ": " + record.message);
-    });
   }
 
   _printNews(Map message) async{
